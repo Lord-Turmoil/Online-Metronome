@@ -123,11 +123,14 @@ input {
 }
 
 #bpm-ctrl ul li button {
-    width: 2em;
-    height: 2em;
-    line-height: 2em;
-    font-size: 1.3em;
+    padding: 4px;
     border-radius: 50%;
+}
+
+#bpm-ctrl ul li button img {
+    vertical-align: middle;
+    width: 2.5em;
+    height: 2.5em;
 }
 
 #dot-list {

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metronome</title>
+    <style>
+        @font-face {
+            font-family: 'BAUHS93';
+            src: url('res/BAUHS93.ttf');
+        }
+    </style>
+    <link rel="shortcut icon" href="res/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/decoration.css">
+    <link rel="stylesheet" href="css/font.css">
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?2e828b031a9ac43dbcfb29be1a7c5930";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+</head>
+
+<body>
+    <header>
+        <h1>Metronome</h1>
+    </header>
+    <hr>
+    <div class="banner">
+        <marquee behavior="scroll" direction="left">
+            <p>Welcome to Tony's Metronome!</p>
+        </marquee>
+    </div>
+    <hr>
+    <div class="wrapper">
+        <div class="section">
+            <h3>BPM</h3>
+            <input type="number" id="bpm" placeholder="1 ~ 240" value="60">
+            <div id="bpm-ctrl">
+                <ul>
+                    <!-- <li>&nbsp;</li> -->
+                    <li><button class="minus">-5</button></li>
+                    <li><button class="minus ">-1</button></li>
+                    <li>&nbsp;</li>
+                    <li><button class="plus">+1</button></li>
+                    <li><button class="plus">+5</button></li>
+                    <!-- <li>&nbsp;</li> -->
+                </ul>
+            </div>
+            <div>
+                <ul id="dot-list">
+                    <li class="dot"></li>
+                    <li class="dot"></li>
+                    <li class="dot"></li>
+                    <li class="dot"></li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <div class="section">
+            <button id="play" class="stop">Play</button>
+        </div>
+        <hr>
+        <div class="section">
+            <h3>Beats</h3>
+            <div id="beats-ctrl">
+                <button class="minus"><img src="res/icon/minus.svg" alt="-"></button>
+                <input type="number" placeholder="1 ~ 8" id="beats" value="1">
+                <button class="plus"><img src="res/icon/plus.svg" alt="+"></button>
+            </div>
+            <h3>Stress First</h3>
+            <button id="stress" class="yes">Yes</button>
+        </div>
+        <hr>
+        <div class="section">
+            <h3>Subdivisions</h3>
+            <div id="sub-box">
+                <div class="sub-row">
+                    <div class="sub-item"><img src="res/sub/4.png" alt=""></div>
+                    <div class="sub-item"><img src="res/sub/8-8.png" alt=""></div>
+                    <div class="sub-item"><img src="res/sub/8-16-16.png" alt=""></div>
+                    <div class="sub-item"><img src="res/sub/16-16-8.png" alt=""></div>
+                </div>
+                <div class="sub-row">
+                    <div class="sub-item"><img src="res/sub/16-16-16-16.png" alt=""></div>
+                    <div class="sub-item"><img src="res/sub/8-8-8.png" alt=""></div>
+                    <div class="sub-item"><img src="res/sub/8dot-16.png" alt=""></div>
+                    <div class="sub-item"><img src="res/sub/16-8dot.png" alt=""></div>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="section">
+            <h3>Sound Style</h3>
+            <ul id="wave-list">
+                <li><img src="res/icon/square-wave.svg" alt="Square"></li>
+                <li><img src="res/icon/sawtooth-wave.svg" alt="Sawtooth"></li>
+                <li><img src="res/icon/sine-wave.svg" alt="Sine"></li>
+                <li><img src="res/icon/triangle-wave.svg" alt="Triangle"></li>
+            </ul>
+        </div>
+        <hr>
+        <div class="section">
+            <h4>Update History</h4>
+            <div class="text">
+                <h5>- 2023/02/26 -</h5>
+                <p>Add sound style</p>
+                <p>More beautiful UI</p>
+                <p>More precise tick</p>
+            </div>
+            <hr>
+            <div class="text">
+                <h5>- 2022/07/11 -</h5>
+                <p>Fistly released</p>
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    <footer class="clearfix">
+        <div class="copyright">
+            <a href="http://www.tonys-studio.top" target="_blank"><span>Copyright &copy; Tony's Studio 2022 - 2023</span></a>
+        </div>
+    </footer>
+
+    <script src="js/copyright.js"></script>
+    <script src="js/metronome.js"></script>
+</body>
+
+</html>

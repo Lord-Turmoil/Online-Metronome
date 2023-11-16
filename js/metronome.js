@@ -160,6 +160,7 @@ function changeSubdivision(sub) {
 
 /******************** Dot ********************/
 function activeDot(d) {
+    console.log(dotList.getElementsByTagName("li"))
     dotList.getElementsByTagName("li")[d].classList.add("active");
 }
 

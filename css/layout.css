@@ -239,3 +239,15 @@ input {
 .text p {
     font-size: 1.2em;
 }
+
+/* badge */
+footer .badges {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+footer .badge {
+    margin: 0px 5px;
+}

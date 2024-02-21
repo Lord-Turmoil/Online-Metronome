@@ -11,10 +11,17 @@
  *   Just... a little surprise. :)              *
  ************************************************/
 
-(function() {
+(function () {
     console.log(" ___________________________________ ");
-    console.log("/    Welcome to Tony's Metronome!   \\"); 
+    console.log("/    Welcome to Tony's Metronome!   \\");
     console.log("|           Version 2.0.0           |");
-    console.log("\\ Developed by www.tonys-studio.top /"); 
+    console.log("\\ Developed by www.tonys-studio.top /");
     console.log(" ----------------------------------- ");
-})()
+})();
+
+(function () {
+    let beginYear = 2022;
+    let currentYear = new Date().getFullYear();
+
+    document.getElementById("year").innerHTML = beginYear + (beginYear === currentYear ? "" : " - " + currentYear);
+})();

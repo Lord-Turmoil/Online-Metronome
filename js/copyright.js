@@ -17,9 +17,4 @@
     console.log("|           Version 2.0.0           |");
     console.log("\\ Developed by www.tonys-studio.top /"); 
     console.log(" ----------------------------------- ");
-    console.log("        \\   ^__^                     ");
-    console.log("         \\  (oo)\\_______             ");
-    console.log("            (__)\\       )\\/\\         ");
-    console.log("                ||----w |            ");
-    console.log("                ||     ||            ");
 })()

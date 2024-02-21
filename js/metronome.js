@@ -11,13 +11,14 @@
  *   Logic of metronome.                        *
  ************************************************/
 
+let state = Metronome.load();
+
 // bpm
 var bpmInput = document.getElementById("bpm");
 var bpmButtonList = document.getElementById("bpm-ctrl").getElementsByTagName("button");
 const MIN_BPM = 1;
 const MAX_BPM = 240;
 const DEFAULT_BPM = 60;
-var bpm;
 var delay;
 
 // dots
@@ -30,9 +31,7 @@ var stressButton = document.getElementById("stress");
 const MIN_BEATS = 1;
 const MAX_BEATS = 8;
 const DEFAULT_BEATS = 4;
-var beats;
 var curBeat;
-var stressFirst;
 
 // notes (in one beat)
 var notes;
@@ -53,10 +52,9 @@ const WAVEFORM = [
     "square",
     "sawtooth",
     "sine",
-    "triangle"    
+    "triangle"
 ]
 var waveList = [];
-var curWave;
 
 // subdivisions
 const SUBDIVISION = [
@@ -70,7 +68,7 @@ const SUBDIVISION = [
     [1, 1, 0, 0],   // 16-8dot
 ];
 var subList = [];    // subdivision list
-var curSub;     // current subdivision id
+var pattern = [];
 var subDelay;   // current delay of subdivision in one beat
 var subSize;    // how many notes (including silence) in the subdivision
 
@@ -79,56 +77,60 @@ var intervalID;
 
 
 function debug() {
-    console.log("bpm = " + bpm);
+    console.log("bpm = " + state.bpm);
     console.log("delay = " + delay);
-    console.log("beats = " + beats);
-    console.log("sub = " + curSub);
+    console.log("beats = " + state.beats);
+    console.log("sub = " + state.subdivision);
     console.log("sub.size = " + subSize);
 }
 
 function updateDelay() {
-    delay = 60000.0 / (bpm * notes);
+    delay = 60000.0 / (state.bpm * notes);
 }
 
 
 /******************** BPM ********************/
 function changeBPM(b) {
-    bpm = b;
+    let bpm = b;
     if (bpm < MIN_BPM) {
         bpm = MIN_BPM;
     } else if (bpm > MAX_BPM) {
         bpm = MAX_BPM;
     }
-
-    updateDelay();    
-
+    state.bpm = bpm;
     bpmInput.value = bpm;
 
+    updateDelay();
     resetState();
+
+    state.save();
 }
 
 function addBPM(b) {
-    changeBPM(bpm + b)
+    changeBPM(state.bpm + b)
 }
 
 
 /******************** Beats ********************/
 function changeBeats(b) {
-    beats = b;
+    let beats = b;
     if (beats < MIN_BEATS) {
         beats = MIN_BEATS;
     } else if (beats > MAX_BEATS) {
         beats = MAX_BEATS;
     }
 
-    initDot(beats);
-    curBeat = curNote = 0;
-
+    state.beats = beats;
     beatsInput.value = beats;
+    curNote = 0;
+
+    initDot(beats);
+
+    state.save();
 }
 
 function addBeats(b) {
-    changeBeats(beats + b);
+    changeBeats(state.beats + b);
 }
 
 
@@ -136,35 +138,34 @@ function addBeats(b) {
 // Deprecated.
 function setSubdivision(sub) {
     subList[sub].classList.add("active");
-    curSub = sub;
-
-    pattern = SUBDIVISION[curSub];  // Array.
+    state.subdivision = sub;
+    pattern = SUBDIVISION[sub];  // Array.
     notes = pattern.length;
     curNote = 0;
 
     updateDelay();
-
     resetState();
+
+    state.save();
 }
 
 function changeSubdivision(sub) {
-    if (sub == curSub) {
+    if (sub == state.subdivision) {
         return;
     }
 
-    subList[curSub].classList.remove("active");
+    subList[state.subdivision].classList.remove("active");
 
     setSubdivision(sub);
 }
 
 
 /******************** Dot ********************/
-function activeDot(d) {
-    console.log(dotList.getElementsByTagName("li"))
+function activateDot(d) {
     dotList.getElementsByTagName("li")[d].classList.add("active");
 }
 
-function deactiveDot(d) {
+function deactivateDot(d) {
     dotList.getElementsByTagName("li")[d].classList.remove("active");
 }
 
@@ -181,7 +182,7 @@ function initDot(n) {
 function resetDot() {
     var list = dotList.getElementsByTagName("li");
     for (var i = 0; i < list.length; i++) {
-        deactiveDot(i);
+        deactivateDot(i);
     }
 }
 
@@ -193,7 +194,7 @@ function playNote(freq) {
     oscillator.connect(volume);
     volume.connect(audioCtx.destination);
 
-    oscillator.type = WAVEFORM[curWave];
+    oscillator.type = WAVEFORM[state.soundStyle];
 
     oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime);
 
@@ -204,18 +205,18 @@ function playNote(freq) {
 function playBeat() {
     if (curNote == 0) {
         if (curBeat == 0) {
-            if (beats > 1) {
-                deactiveDot(beats - 1);
+            if (state.beats > 1) {
+                deactivateDot(state.beats - 1);
             }
         } else {
-            deactiveDot(curBeat - 1);
+            deactivateDot(curBeat - 1);
         }
-        activeDot(curBeat);
+        activateDot(curBeat);
     }
 
     if (pattern[curNote] == 1) {
         if (curNote == 0 && curBeat == 0) {
-            playNote(stressFirst ? TICK_FREQ : TOK_FREQ);
+            playNote(state.stressFirst ? TICK_FREQ : TOK_FREQ);
         }
         else {
             playNote(curNote == 0 ? TOK_FREQ : TAK_FREQ);
@@ -224,7 +225,7 @@ function playBeat() {
 
     if (++curNote >= notes) {
         curNote = 0;
-        if (++curBeat >= beats) {
+        if (++curBeat >= state.beats) {
             curBeat = 0;
         }
     }
@@ -270,7 +271,7 @@ function resetState() {
 
 /******************** Initialization ********************/
 function initBMP() {
-    changeBPM(DEFAULT_BPM);
+    changeBPM(state.bpm);
 
     bpmButtonList[0].onclick = function () {
         addBPM(-5);
@@ -294,8 +295,7 @@ function initBMP() {
 }
 
 function initBeats() {
-    changeBeats(DEFAULT_BEATS);
-    stressFirst = true;
+    changeBeats(state.beats);
 
     beatsButtonList[0].onclick = function () {
         addBeats(-1);
@@ -305,20 +305,30 @@ function initBeats() {
     }
     beatsInput.onchange = function () {
         if (beatsInput.value == "") {
-            changeBeats(beats);
+            changeBeats(state.beats);
         } else {
             changeBeats(parseInt(beatsInput.value));
         }
     }
+
+    if (state.stressFirst) {
+        stressButton.innerHTML = "Yes";
+        stressButton.className = "yes"
+    } else {
+        stressButton.innerHTML = "No";
+        stressButton.className = "no";
+    }
+
     stressButton.onclick = function () {
-        stressFirst = !stressFirst;
-        if (stressFirst) {
+        state.stressFirst = !state.stressFirst;
+        if (state.stressFirst) {
             stressButton.innerHTML = "Yes";
             stressButton.className = "yes"
         } else {
             stressButton.innerHTML = "No";
             stressButton.className = "no";
         }
+        state.save();
     }
 }
 
@@ -332,7 +342,7 @@ function initSubdivision() {
         }
     }
 
-    setSubdivision(0);
+    setSubdivision(state.subdivision);
 
     for (var i = 0; i < subList.length; i++) {
         (function (_i) {
@@ -354,25 +364,27 @@ function initPlay() {
 
 /******************** Waveform ********************/
 function setWaveform(id) {
-    curWave = id;
+    state.soundStyle = id;
     waveList[id].classList.add("active");
 }
 
 function changeWaveform(id) {
-    if (curWave == id) {
+    if (state.soundStyle == id) {
         return;
     }
 
-    waveList[curWave].classList.remove("active");
+    waveList[state.soundStyle].classList.remove("active");
     setWaveform(id);
+
+    state.save();
 }
 
 function initWaveform() {
     waveList = document.getElementById("wave-list").getElementsByTagName("li");
-    setWaveform(0);
+    setWaveform(state.soundStyle);
     for (var i = 0; i < waveList.length; i++) {
-        (function(_i) {
-            waveList[_i].onclick = function() {
+        (function (_i) {
+            waveList[_i].onclick = function () {
                 changeWaveform(_i);
             };
         })(i);

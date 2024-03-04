@@ -4,9 +4,10 @@ Copyright &copy; Tony's Studio 2022 - 2023
 
 -----
 
-## Preview
+## Try it!
 
-You can use it at <http://www.tonys-studio.top:83/>.
+- [On Tony's Studio](http://metro.tonys-studio.top/)
+- [On GitHub Pages](https://lord-turmoil.github.io/Online-Metronome/)
 
 ## General
 
